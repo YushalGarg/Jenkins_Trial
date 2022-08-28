@@ -1,0 +1,107 @@
+CREATE TABLE driver_details(
+driver_id int Primary key Auto_increment,
+driver_name varchar(50) Not Null,
+contact_no	bigint(10) Not Null Unique, 
+license_number varchar(50),	 
+date_of_registration date Not Null,
+average_rating decimal(2,1) Not Null)
+Auto_increment=1001;
+INSERT INTO driver_details values
+(1001,"Alex",9900990091,"USM101AL",DATE_SUB(CURDATE(),INTERVAL 750 DAY),4.3),
+(1002,"Bob",8800880087,"USQ102BO",DATE_SUB(CURDATE(),INTERVAL 700 DAY),4.1),
+(1003,"George",9988998895,"USB103GE",DATE_SUB(CURDATE(),INTERVAL 650 DAY),3.9),
+(1004,"Garry",8899889981,"USE104GA",DATE_SUB(CURDATE(),INTERVAL 600 DAY),4.0),
+(1005,"Peter",7788778819,"USQ105PE",DATE_SUB(CURDATE(),INTERVAL 500 DAY),4.2),
+(1006,"Chris",9988298877,"USB106CH",DATE_SUB(CURDATE(),INTERVAL 300 DAY),3.8),
+(1007,"Tim",8899676677,"USY107TI",DATE_SUB(CURDATE(),INTERVAL 200 DAY),4.0),
+(1008,"Steve",6577889988,"USW108SE",DATE_SUB(CURDATE(),INTERVAL 100 DAY),3.6),
+(1009,"Pat",9876678900,"USH109PA",DATE_SUB(CURDATE(),INTERVAL 60 DAY),4.8),
+(1010,"Nathan",7896789618,"USN110NA",DATE_SUB(CURDATE(),INTERVAL 30 DAY),4.0);
+
+
+
+INSERT INTO vehicle_details values
+("US31D456",1001,"Toyota Corolla","Sedan",4,39.00),
+("US31D457",1002,"Subaru Crosstek","SUV",6,49.00),
+("US31D458",1003,"Toyota Highlander","SUV",6,59.00),
+("US31D459",1004,"Honda Fit","Mini",3,19.00),
+("US31D460",1005,"Volkswagon GTI","Hatchback",5,27.00),
+("US31D461",1006,"Honda Civic","Sedan",4,34.00),
+("US31D462",1007,"Kia Optima","Sedan",4,29.00),
+("US31D463",1008,"Kia Rio","Hatchback",4,29.00),
+("US31D464",1009,"Chevrolet Bolt","Mini",3,17.00),
+("US31D465",1010,"Honda Pilot","SUV",6,69.00);
+
+CREATE TABLE customer_details(
+customer_id	int Primary Key Auto_increment,
+customer_name varchar(50) Not Null,
+date_of_registration date Not Null,
+customer_phone bigint(10) Not Null Unique, 
+customer_address text,	 
+credit_points int Not Null Default 0,
+wallet decimal(6,2) Default 0)
+Auto_increment=1;
+
+
+INSERT INTO customer_details values
+(1,"Ted Moseby",DATE_SUB(CURDATE(),INTERVAL 100 DAY)	,9898989898	,"Manhattan",	110,	400.00),
+(2,"Sheldon Copper",DATE_SUB(CURDATE(),INTERVAL 90 DAY)	,8989898989	,"Queens",	230,	150.00),
+(3,"Jessy Pinkman",DATE_SUB(CURDATE(),INTERVAL 80 DAY)	,7878787878	,"Pomonok",	80,	346.00),
+(4,"Billy Kimber",DATE_SUB(CURDATE(),INTERVAL 75 DAY)	,8787878787	,"Brooklyn",	90,	499.00),
+(5,"Thomas Shelby",DATE_SUB(CURDATE(),INTERVAL 40 DAY)	,9090909090	,"Newark",	30,	341.00),
+(6,"John Snow",DATE_SUB(CURDATE(),INTERVAL 20 DAY)	,8908908908	,"Yonkers",	50	,267.00);
+
+
+CREATE TABLE booking_details(
+booking_id varchar(10) Primary Key,
+customer_id int Not Null,
+driver_id int Not Null,
+date_of_booking timestamp Not Null Default current_timestamp,
+source varchar(50) Not Null,
+destination varchar(50) Not Null,
+type_of_travel enum(‘pool’, ‘solo’) Not Null,
+number_of_persons int,
+booking_status enum (‘waiting’, ‘travelling’, ‘completed’,  ‘cancelled’) Not Null Default ‘waiting’,
+foreign key (customer_id) references customer_details(customer_id),
+foreign key (driver_id) references driver_details(driver_id)); 
+
+
+
+
+
+INSERT INTO booking_details values
+("BK101",1,1006,DATE_SUB(NOW(),INTERVAL 8760 HOUR),"Yonkers","Brooklyn","pool",1,"completed"),
+("BK102",2,1006,DATE_SUB(NOW(),INTERVAL 8001 HOUR),"Yonkers","Brooklyn","pool",1,"completed"),
+("BK103",3,1006,DATE_SUB(NOW(),INTERVAL 7665 HOUR),"Yonkers" ,"Brooklyn","pool",2,"completed"),
+("BK104",3,1001,DATE_SUB(NOW(),INTERVAL 438000 MINUTE),"Manhattan","Queens","solo",NULL,"cancelled"),
+("BK105",5,1003,DATE_SUB(NOW(),INTERVAL 394300 MINUTE),"Queens","Elizabeth","solo",3,"completed"),
+("BK106",5,1004,DATE_SUB(NOW(),INTERVAL 306199 MINUTE),"Elizabeth","Queens","solo",1,"completed"),
+("BK107",6,1005,DATE_SUB(NOW(),INTERVAL 262000 MINUTE),"Elizabeth","Brooklyn","solo",NULL,"cancelled"),
+("BK108",3,1004,DATE_SUB(NOW(),INTERVAL 175200 MINUTE),"Elizabeth","Huntington","solo",NULL,"completed"),
+("BK109",4,1003,DATE_SUB(NOW(),INTERVAL 100000 MINUTE),"Huntington","Woodrow","solo",NULL,"cancelled"),
+("BK110",4,1006,DATE_SUB(NOW(),INTERVAL 80000 MINUTE),"Woodrow","Manhattan","solo",NULL,"cancelled"),
+("BK111",1,1007,DATE_SUB(NOW(),INTERVAL 40000 MINUTE),"Queens","Newark","solo",NULL,"completed"),
+("BK112",1,1008,DATE_SUB(NOW(),INTERVAL 262800 SECOND),"Huntington","Woodrow","solo",NULL,"completed"),
+("BK113",5,1010,DATE_SUB(NOW(),INTERVAL 720 SECOND),"Huntington","Manhattan","solo",NULL,"waiting"),
+("BK114",4,1009,DATE_SUB(NOW(),INTERVAL 360 SECOND),"Brooklyn","Yonkers","pool",2,"travelling"),
+("BK115",6,1009,NOW(),"Brooklyn","Yonkers","pool",4,"travelling");
+
+CREATE TABLE coupon_details(
+coupon_code varchar(50) Primary Key,
+expiry_date date Not Null,
+description text,     	 
+discount_percentage float Not Null);
+
+INSERT INTO coupon_details values
+("WELCOME20",DATE_SUB(CURDATE(),INTERVAL 7 DAY),"Welcome offer",20),
+("SEASONAL15",DATE_SUB(CURDATE(),INTERVAL 1 DAY),"Seasonal offer",15),
+("HAPPY30",CURDATE() ,"Happy hours offer",30),
+("DHAMAKA20",DATE_ADD(CURDATE(),INTERVAL 31 DAY),"Marching it offer",20);
+
+
+
+
+
+
+
+
